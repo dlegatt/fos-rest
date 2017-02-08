@@ -7,3 +7,6 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+  app.authenticator.user:
+    class: AppBundle\Security\Authenticator\UserLoginAuthenticator
+    arguments: ['@doctrine.orm.entity_manager','@security.password_encoder','@lexik_jwt_authentication.handler.authentication_failure','@lexik_jwt_authentication.handler.authentication_success']

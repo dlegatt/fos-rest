@@ -9,12 +9,14 @@ use AppBundle\Entity\Post;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 class DefaultController extends FOSRestController
 {
 
     /**
      * @Rest\Get("/post")
+     * @ApiDoc()
      */
     public function getAction()
     {
@@ -34,6 +36,7 @@ class DefaultController extends FOSRestController
     /**
      * @param Request $request
      * @Rest\Post("/post")
+     * @ApiDoc()
      */
     public function postAction(Request $request)
     {
@@ -54,6 +57,7 @@ class DefaultController extends FOSRestController
      * @param Request $request
      * @return Post|\Symfony\Component\Form\Form
      * @Rest\Put("/post/{id}")
+     * @ApiDoc()
      */
     public function updateAction(Post $post,Request $request)
     {
@@ -72,6 +76,7 @@ class DefaultController extends FOSRestController
      * @param Post $post
      * @return Response
      * @Rest\Delete("/post/{id}")
+     * @ApiDoc()
      */
     public function deleteAction(Post $post)
     {
@@ -80,5 +85,13 @@ class DefaultController extends FOSRestController
         $view = $this->view($post,Response::HTTP_OK);
         $em->flush();
         return $this->handleView($view);
+    }
+
+    /**
+     * @Rest\Get("/play")
+     */
+    public function playAction()
+    {
+        return ['All secure in sector 7!'];
     }
 }
