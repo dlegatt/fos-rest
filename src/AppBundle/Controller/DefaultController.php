@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Form\PostType;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\Entity\Post;
@@ -36,7 +37,48 @@ class DefaultController extends FOSRestController
      */
     public function postAction(Request $request)
     {
-        dump($request);
-        return ['foo'];
+        $post = new Post();
+        $form = $this->createForm(PostType::class,$post);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($post);
+            $em->flush();
+            return $post;
+        }
+        return $form;
+    }
+
+    /**
+     * @param Post $post
+     * @param Request $request
+     * @return Post|\Symfony\Component\Form\Form
+     * @Rest\Put("/post/{id}")
+     */
+    public function updateAction(Post $post,Request $request)
+    {
+        $form = $this->createForm(PostType::class, $post,
+            ["method" => "PUT"]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+            return $post;
+        }
+        return $form;
+    }
+
+    /**
+     * @param Post $post
+     * @return Response
+     * @Rest\Delete("/post/{id}")
+     */
+    public function deleteAction(Post $post)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($post);
+        $view = $this->view($post,Response::HTTP_OK);
+        $em->flush();
+        return $this->handleView($view);
     }
 }
